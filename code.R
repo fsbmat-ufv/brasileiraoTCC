@@ -1,12 +1,13 @@
 rm(list = ls())
 graphics.off()
 cat("\014")
-#Pacotes
+#Pacotes utilizados 
 library(tidyverse)
 library(data.table)
 library(stringr)
 library(lubridate)
-#Leitura do banco de dados inicial
+library(png)
+#Leitura do banco de dados original
 url1 <- "https://raw.githack.com/fsbmat-ufv/brasileiraoTCC/main/dados/campeonato_brasileiro_2020.csv"
 dt20 <- data.table::fread(url1, encoding = "UTF-8")
 #Mudanca do nome das variaveis
@@ -61,6 +62,8 @@ dt20$Rodada <- str_replace_all(dt20$Rodada, "ª", "")
 #Criar a coluna de data no formato padrao brasileiro
 dt20$Data <- as.Date((dt20$Data), format = "%d-%m-%Y")
 df <- dt20 %>% filter(Data>=as.Date("2003-01-01"))
+
+#Limpeza de recursos desnecessarios da  memoria
 remove(dt20, url1)
 
 #Correcao de erros encontrados no data.frame
@@ -82,7 +85,9 @@ df$ID <- NULL
 df <- df %>%
   select(Temporada,Data,Dia,Horario,Rodada,Arena,Mandante,Visitante,Vencedor,Derrotado,
          GolsMan,GolsVisit,PontMandante,PontVisitante,EstadoMan,EstadoVisit,EstadoVenc) 
+
 #Salvamos o banco de dados em formato rds
+#Tal formato economiza espaco na memoria
 saveRDS(df,"dados/d2021.rds") 
 
   
